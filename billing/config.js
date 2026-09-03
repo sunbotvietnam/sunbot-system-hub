@@ -1,0 +1,2 @@
+window.BILLING_BACKEND_URL = '';
+window.BILLING_APP_VERSION = '2.1.0';
