@@ -1,5 +1,5 @@
 window.BILLING_BACKEND_URL = '';
-window.BILLING_APP_VERSION = '2.1.3';
+window.BILLING_APP_VERSION = '2.1.4';
 
 window.addEventListener('load',()=>{
   const fmt=n=>(Number(n)||0).toLocaleString('vi-VN')+' đồng';
@@ -34,7 +34,6 @@ window.addEventListener('load',()=>{
     if(rule.source==='half_non_teacher') return Math.max(0,t.half-t.teacherHalf);
     if(rule.source==='teacherFull') return t.teacherFull;
     if(rule.source==='teacherHalf') return t.teacherHalf;
-    /* tương thích hồ sơ cũ */
     if(rule.source==='full') return t.full;
     return Number(rule.manualQty)||0;
   };
@@ -121,7 +120,6 @@ window.addEventListener('load',()=>{
       if(vals.length>=8){
         out.push({cls:vals[0],size:num(vals[1]),full:num(vals[2]),half:num(vals[3]),absent:num(vals[4]),teacherFull:num(vals[5]),teacherHalf:num(vals[6]),note:vals.slice(7).join(' | ')});
       }else{
-        /* tương thích format cũ: cột thứ 6 là Con GV 1/2 tháng */
         out.push({cls:vals[0],size:num(vals[1]),full:num(vals[2]),half:num(vals[3]),absent:num(vals[4]),teacherFull:0,teacherHalf:num(vals[5]),note:vals.slice(6).join(' | ')});
       }
     }
@@ -142,7 +140,6 @@ window.addEventListener('load',()=>{
     renderRows();validateRows();calculate();renderDocs();
   };
 
-  /* Cập nhật hướng dẫn và tiêu đề cột đầu vào */
   const prompt=document.querySelector('.prompt-box');
   if(prompt) prompt.innerHTML='<b>Định dạng khuyến nghị từ ChatGPT / NotebookLM</b><br>Lớp | Sĩ số | Học đủ tháng | Học 1/2 tháng | Nghỉ cả tháng | Con GV đủ tháng | Con GV 1/2 tháng | Ghi chú';
   const qHead=document.querySelector('#panel2 .data-table thead tr');
@@ -151,28 +148,30 @@ window.addEventListener('load',()=>{
   if(lead) lead.textContent='Mỗi lớp phải cân: sĩ số = học đủ tháng + học 1/2 tháng + nghỉ cả tháng. Con giáo viên là tập con của nhóm học tương ứng, không được cộng thêm vào sĩ số.';
   if($('demoBtn')) $('demoBtn').textContent='Nạp ví dụ Mầm non B T8/2026';
 
-  /* Rebind các nút đã được app gốc bind bằng tham chiếu hàm cũ */
   if($('parseBtn')) $('parseBtn').onclick=parseRaw;
   if($('demoBtn')) $('demoBtn').onclick=demo;
   if($('validateBtn')) $('validateBtn').onclick=validateRows;
 
-  /* Nếu đang có trường được chọn, sinh lại đủ 4 quy tắc */
   if(currentSchool){rules=makeRules(currentSchool);renderRules();renderRows();validateRows();calculate();}
   else {renderRows();renderRules();}
 
   const ruleNote=()=>{
     const normalFull=Array.isArray(rules)?rules.find(r=>r.source==='full_non_teacher'||r.source==='full'):null;
-    const reductions=Array.isArray(rules)?rules.filter(r=>!['full_non_teacher','full'].includes(r.source)&&r.source!=='manual'):[];
     const tuitionText=normalFull
       ? `${fmt(normalFull.tuition)}/trẻ/tháng + dịch vụ bổ sung ${fmt(normalFull.service)}/trẻ/tháng = ${fmt((Number(normalFull.tuition)||0)+(Number(normalFull.service)||0))}/trẻ/tháng.`
       : 'Theo quy tắc áp dụng của trường.';
-    const reductionText=reductions.length
-      ? reductions.map(r=>`${r.name}: học phí ${fmt(r.tuition)} + dịch vụ bổ sung ${fmt(r.service)} = ${fmt((Number(r.tuition)||0)+(Number(r.service)||0))}/trẻ`).join('; ')+'. Dịch vụ bổ sung không giảm.'
-      : 'Không có quy tắc giảm trừ riêng. Dịch vụ bổ sung không giảm.';
-    return `<div style="margin:0 0 10px;font-size:10.5px;line-height:1.5;color:#374151"><div><b>Đơn vị tính:</b> Trẻ/tháng</div><div><b>Học phí:</b> ${tuitionText}</div><div><b>Giảm trừ:</b> ${reductionText}</div></div>`;
+
+    const reductions=Array.isArray(rules)
+      ? rules.filter(r=>!['full_non_teacher','full'].includes(r.source)&&r.source!=='manual'&&qtyFor(r)>0)
+      : [];
+
+    const reductionLine=reductions.length
+      ? `<div><b>Giảm trừ:</b> ${reductions.map(r=>`${r.name}: học phí ${fmt(r.tuition)} + dịch vụ bổ sung ${fmt(r.service)} = ${fmt((Number(r.tuition)||0)+(Number(r.service)||0))}/trẻ`).join('; ')}.</div>`
+      : '';
+
+    return `<div style="margin:0 0 10px;font-size:10.5px;line-height:1.5;color:#374151"><div><b>Đơn vị tính:</b> Trẻ/tháng</div><div><b>Học phí:</b> ${tuitionText}</div>${reductionLine}</div>`;
   };
 
-  /* Chân trang thống nhất */
   if(typeof window.footer==='function'){
     window.footer=function(type){return `<div class="footer"><span>Kiro Việt Nam - Hồ sơ thanh toán</span><span>${refCode(type)}</span></div>`;};
   }
