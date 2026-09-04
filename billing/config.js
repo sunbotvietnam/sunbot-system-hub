@@ -6,13 +6,13 @@ window.addEventListener('load',()=>{
   const ruleNote=()=>{
     const full=Array.isArray(rules)?rules.find(r=>r.source==='full'):null;
     const reductions=Array.isArray(rules)?rules.filter(r=>r.source!=='full'):[];
-    const tuitionLine=full
-      ? `Học phí: ${fmt(full.tuition)}/trẻ/tháng + dịch vụ bổ sung ${fmt(full.service)}/trẻ/tháng = ${fmt((Number(full.tuition)||0)+(Number(full.service)||0))}/trẻ/tháng.`
-      : 'Học phí: Theo quy tắc áp dụng của trường.';
-    const reductionLine=reductions.length
-      ? 'Giảm trừ: '+reductions.map(r=>`${r.name}: học phí ${fmt(r.tuition)} + dịch vụ bổ sung ${fmt(r.service)} = ${fmt((Number(r.tuition)||0)+(Number(r.service)||0))}/trẻ`).join('; ')+'.'
-      : 'Giảm trừ: Không có quy tắc giảm trừ riêng.';
-    return `<div style="margin:0 0 10px;font-size:10.5px;line-height:1.5;color:#374151"><div><b>Đơn vị tính:</b> Trẻ/tháng</div><div><b>${tuitionLine.replace('Học phí: ','')}</b></div><div><b>Giảm trừ:</b> ${reductionLine.replace('Giảm trừ: ','')}</div></div>`;
+    const tuitionText=full
+      ? `${fmt(full.tuition)}/trẻ/tháng + dịch vụ bổ sung ${fmt(full.service)}/trẻ/tháng = ${fmt((Number(full.tuition)||0)+(Number(full.service)||0))}/trẻ/tháng.`
+      : 'Theo quy tắc áp dụng của trường.';
+    const reductionText=reductions.length
+      ? reductions.map(r=>`${r.name}: học phí ${fmt(r.tuition)} + dịch vụ bổ sung ${fmt(r.service)} = ${fmt((Number(r.tuition)||0)+(Number(r.service)||0))}/trẻ`).join('; ')+'.'
+      : 'Không có quy tắc giảm trừ riêng.';
+    return `<div style="margin:0 0 10px;font-size:10.5px;line-height:1.5;color:#374151"><div><b>Đơn vị tính:</b> Trẻ/tháng</div><div><b>Học phí:</b> ${tuitionText}</div><div><b>Giảm trừ:</b> ${reductionText}</div></div>`;
   };
 
   if(typeof window.quantityDoc==='function'){
