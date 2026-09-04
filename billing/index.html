@@ -8,46 +8,129 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=2.2.0">
+<link rel="stylesheet" href="./styles.css?v=2.1.0">
 </head>
 <body>
 <div class="app">
 <aside class="sidebar no-print">
-  <div class="brand"><div class="brand-mark">Sunbot</div><div><h1>Sunbot Billing OS</h1><p>Hồ sơ thanh toán trường học · V2.2</p></div></div>
+  <div class="brand">
+    <div class="brand-mark">S</div>
+    <div><h1>Sunbot Billing OS</h1><p>Hồ sơ thanh toán trường học · V2.1</p></div>
+  </div>
+
   <section class="side-section">
     <div class="section-title">Hồ sơ</div>
-    <label>Trường / đối tác</label><select id="schoolSelect"></select>
-    <div class="grid2"><div><label>Tháng thanh toán</label><input id="billMonth" type="month"></div><div><label>Ngày chứng từ</label><input id="docDate" type="date"></div></div>
-    <label>Đại diện nhà cung cấp</label><input id="repName" placeholder="Họ tên người ký">
-    <label>Tên dịch vụ trên chứng từ</label><input id="serviceName" value="Chương trình Lập trình tư duy cùng Sunbot">
+    <label>Trường / đối tác</label>
+    <select id="schoolSelect"></select>
+    <div class="grid2">
+      <div><label>Tháng thanh toán</label><input id="billMonth" type="month"></div>
+      <div><label>Ngày chứng từ</label><input id="docDate" type="date"></div>
+    </div>
+    <label>Đại diện nhà cung cấp</label>
+    <input id="repName" placeholder="Họ tên người ký">
+    <label>Tên dịch vụ trên chứng từ</label>
+    <input id="serviceName" value="Chương trình Lập trình tư duy cùng Sunbot">
     <label class="check"><input id="showBank" type="checkbox" checked><span>Hiển thị thông tin chuyển khoản BIDV trong Giấy đề nghị thanh toán</span></label>
   </section>
+
   <section class="side-section">
     <div class="section-title">Thông tin Kiro</div>
-    <label>Địa chỉ</label><input id="companyAddress" value="Số 4 Lý Thường Kiệt, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam">
-    <label>Tài khoản BIDV</label><input id="bankAccount" value="2160556888">
-    <label>Ngân hàng</label><input id="bankName" value="Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV) - CN Đống Đa">
+    <label>Địa chỉ</label>
+    <input id="companyAddress" value="Số 4 Lý Thường Kiệt, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam">
+    <label>Tài khoản BIDV</label>
+    <input id="bankAccount" value="2160556888">
+    <label>Ngân hàng</label>
+    <input id="bankName" value="Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV) - CN Đống Đa">
     <div class="small-note">MST 0108919688 · Hotline 0866 109 086 · www.sunbot.vn</div>
   </section>
+
   <section class="side-section">
     <div class="section-title">Lưu và đồng bộ</div>
     <div class="backend-line"><span id="backendDot" class="dot local"></span><span id="backendText">Đang dùng dữ liệu cục bộ</span></div>
-    <div class="button-row"><button class="btn" id="saveBtn">Lưu hồ sơ</button><button class="btn" id="loadBtn">Mở gần nhất</button><button class="btn danger" id="resetBtn">Hồ sơ mới</button></div>
-    <div class="button-row top-gap"><button class="btn" id="exportBackupBtn">Tải bản sao JSON</button><label class="btn file-btn">Mở bản sao JSON<input id="importBackupInput" type="file" accept="application/json,.json"></label></div>
-    <div class="small-note" id="saveHint">Bản nháp gồm dữ liệu nguồn và các chỉnh sửa trực tiếp trên chứng từ.</div>
+    <div class="button-row">
+      <button class="btn" id="saveBtn">Lưu hồ sơ</button>
+      <button class="btn" id="loadBtn">Mở gần nhất</button>
+      <button class="btn danger" id="resetBtn">Hồ sơ mới</button>
+    </div>
+    <div class="small-note" id="saveHint">Khi API Google Sheet được triển khai, app sẽ tự chuyển sang backend mà không đổi giao diện.</div>
   </section>
 </aside>
+
 <main class="main">
-<header class="topbar no-print"><div><div class="case-title" id="caseTitle">Hồ sơ thanh toán</div><div class="case-sub" id="caseSub">Chưa chọn trường</div></div><div class="button-row"><span class="status" id="caseStatus">ĐANG SOẠN</span><button class="btn primary" id="printAllBtn">Tải / in PDF</button></div></header>
-<div class="workspace">
-<nav class="steps no-print"><button class="step active" data-step="1">1. Điểm danh</button><button class="step" data-step="2">2. Khối lượng</button><button class="step" data-step="3">3. Tính tiền</button><button class="step" data-step="4">4. Chứng từ</button><button class="step" data-step="5">5. Xuất hồ sơ</button></nav>
-<section class="panel active" id="panel1"><div class="card"><div class="eyebrow">BƯỚC 1</div><h2>Nạp dữ liệu điểm danh</h2><p class="lead">Giáo viên chụp phiếu điểm danh, NotebookLM tổng hợp, sau đó dán kết quả vào đây. App chỉ dùng kết quả sau khi người vận hành kiểm tra.</p><div class="prompt-box"><b>Định dạng khuyến nghị</b><br>Lớp | Sĩ số | Học đủ tháng | Học 1/2 tháng | Nghỉ cả tháng | Con giáo viên học 1/2 tháng | Ghi chú</div><textarea id="rawInput" rows="10" placeholder="Dán bảng NotebookLM hoặc TSV vào đây..."></textarea><div class="button-row top-gap"><button class="btn primary" id="parseBtn">Chuyển thành bảng khối lượng</button><button class="btn" id="demoBtn">Nạp mẫu kiểm thử Mầm non B T8/2026</button></div></div></section>
-<section class="panel" id="panel2"><div class="card"><div class="eyebrow">BƯỚC 2</div><h2>Bảng xác định khối lượng - số lượng</h2><p class="lead">Mỗi lớp phải cân: sĩ số = học đủ tháng + học 1/2 tháng + nghỉ cả tháng. Con giáo viên là nhóm con của số trẻ học 1/2 tháng, không cộng thêm vào sĩ số.</p><div class="table-wrap"><table class="data-table"><thead><tr><th>Lớp</th><th>Sĩ số</th><th>Đủ tháng</th><th>1/2 tháng</th><th>Nghỉ</th><th>Con GV 1/2</th><th>Ghi chú</th><th></th></tr></thead><tbody id="quantityBody"></tbody></table></div><div class="button-row top-gap"><button class="btn" id="addClassBtn">Thêm lớp</button><button class="btn primary" id="validateBtn">Kiểm tra logic</button></div><div id="validationBox" class="validation neutral">Chưa kiểm tra dữ liệu.</div></div></section>
-<section class="panel" id="panel3"><div class="card"><div class="eyebrow">BƯỚC 3</div><h2>Chính sách tính tiền</h2><p class="lead">Đơn giá và mức giảm là nguồn tính chính thức của hồ sơ. Có thể thêm quy tắc ngoại lệ hoặc điều chỉnh riêng từng kỳ.</p><div class="table-wrap"><table class="data-table"><thead><tr><th>Quy tắc</th><th>Nguồn số lượng</th><th>Học phí</th><th>Dịch vụ bổ sung</th><th></th></tr></thead><tbody id="policyBody"></tbody></table></div><button class="btn top-gap" id="addRuleBtn">Thêm quy tắc ngoại lệ</button></div>
-<div class="card"><h2>Điều chỉnh một lần trong kỳ</h2><p class="lead">Dùng cho thưởng, hỗ trợ, bù kỳ trước hoặc giảm trừ đặc biệt. Khoản này chỉ thuộc hồ sơ hiện tại.</p><div class="table-wrap"><table class="data-table"><thead><tr><th>Loại</th><th>Nội dung</th><th>Số tiền</th><th>Tham gia cơ sở tính chi trường</th><th></th></tr></thead><tbody id="adjustBody"></tbody></table></div><button class="btn top-gap" id="addAdjustBtn">Thêm điều chỉnh</button></div>
-<div class="card"><h2>Cơ chế chi cho trường</h2><div class="grid3"><div><label>Cơ sở tính</label><select id="commissionMode"><option value="net_tuition">% trên học phí sau điều chỉnh</option><option value="final">% trên tổng thực thu</option><option value="fixed">Số tiền cố định</option></select></div><div><label>Tỷ lệ (%)</label><input id="commissionPct" type="number" value="20" min="0" max="100"></div><div><label>Số tiền cố định</label><input id="commissionFixed" type="number" value="0" min="0"></div></div><div class="kpis top-gap"><div class="kpi"><span>Học phí</span><strong id="sumTuition">0</strong></div><div class="kpi"><span>Dịch vụ bổ sung</span><strong id="sumService">0</strong></div><div class="kpi"><span>Điều chỉnh</span><strong id="sumAdjust">0</strong></div><div class="kpi accent"><span>Đề nghị thanh toán</span><strong id="sumFinal">0</strong></div><div class="kpi"><span>Phiếu chi</span><strong id="sumCommission">0</strong></div></div></div></section>
-<section class="panel" id="panel4"><div class="preview-layout"><aside class="doc-list no-print"><div class="doc-list-title">Chứng từ</div><button class="doc-btn active" data-doc="quantity">01. Bảng khối lượng</button><button class="doc-btn" data-doc="request">02. Đề nghị thanh toán</button><button class="doc-btn" data-doc="receipt">03. Phiếu thu</button><button class="doc-btn" data-doc="payment">04. Phiếu chi</button><div class="doc-actions"><button class="btn" id="regenerateDocBtn">Làm mới từ dữ liệu</button><button class="btn danger" id="excludeCurrentDocBtn">Loại khỏi bộ hồ sơ</button></div><p class="small-note">Có thể bấm trực tiếp vào chữ trên chứng từ để sửa. Dấu × trong bảng dùng để xoá dòng trình bày.</p></aside><div class="preview" id="docPreview"></div></div></section>
-<section class="panel" id="panel5"><div class="card"><div class="eyebrow">BƯỚC 5</div><h2>Xuất bộ hồ sơ</h2><p class="lead">Chọn những chứng từ cần đưa vào bộ PDF. Các chỉnh sửa trực tiếp trên từng chứng từ được giữ lại trong bản nháp.</p><div id="docChecklist" class="checklist"></div><div class="filename" id="filenameBox"></div><div class="button-row top-gap"><button class="btn primary" id="downloadPdfBtn">Tải / in bộ PDF</button><button class="btn" id="exportWordBtn">Xuất Word chứng từ đang mở</button></div><div id="allDocsPreview" class="all-docs-preview"></div></div></section>
-</div></main></div>
-<script src="./config.js?v=2.2.0"></script><script src="./fallback-data.js?v=2.2.0"></script><script src="./app.js?v=2.2.0"></script>
-</body></html>
+  <header class="topbar no-print">
+    <div><div class="case-title" id="caseTitle">Hồ sơ thanh toán</div><div class="case-sub" id="caseSub">Chưa chọn trường</div></div>
+    <div class="button-row"><span class="status" id="caseStatus">ĐANG SOẠN</span><button class="btn primary" id="printAllBtn">Xuất bộ hồ sơ</button></div>
+  </header>
+
+  <div class="workspace">
+    <nav class="steps no-print">
+      <button class="step active" data-step="1">1. Điểm danh</button>
+      <button class="step" data-step="2">2. Khối lượng</button>
+      <button class="step" data-step="3">3. Tính tiền</button>
+      <button class="step" data-step="4">4. Chứng từ</button>
+      <button class="step" data-step="5">5. Xuất hồ sơ</button>
+    </nav>
+
+    <section class="panel active" id="panel1">
+      <div class="card">
+        <div class="eyebrow">BƯỚC 1</div>
+        <h2>Nạp dữ liệu điểm danh</h2>
+        <p class="lead">Giáo viên chụp phiếu điểm danh, NotebookLM tổng hợp, sau đó dán kết quả vào đây. App chỉ dùng kết quả sau khi người vận hành kiểm tra.</p>
+        <div class="prompt-box"><b>Định dạng khuyến nghị từ NotebookLM</b><br>Lớp | Sĩ số | Học đủ tháng | Học 1/2 tháng | Nghỉ cả tháng | Con giáo viên học 1/2 tháng | Ghi chú</div>
+        <textarea id="rawInput" rows="11" placeholder="Dán bảng NotebookLM hoặc TSV vào đây..."></textarea>
+        <div class="button-row top-gap"><button class="btn primary" id="parseBtn">Chuyển thành bảng khối lượng</button><button class="btn" id="demoBtn">Nạp ví dụ Mầm non B T7/2026</button></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel2">
+      <div class="card">
+        <div class="eyebrow">BƯỚC 2</div>
+        <h2>Bảng xác định khối lượng - số lượng</h2>
+        <p class="lead">Mỗi lớp phải cân: sĩ số = học đủ tháng + học 1/2 tháng + nghỉ cả tháng. Con giáo viên là nhóm con của số trẻ học 1/2 tháng, không được cộng thêm vào sĩ số.</p>
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>Lớp</th><th>Sĩ số</th><th>Đủ tháng</th><th>1/2 tháng</th><th>Nghỉ</th><th>Con GV 1/2</th><th>Ghi chú</th><th></th></tr></thead><tbody id="quantityBody"></tbody></table></div>
+        <div class="button-row top-gap"><button class="btn" id="addClassBtn">Thêm lớp</button><button class="btn primary" id="validateBtn">Kiểm tra logic</button></div>
+        <div id="validationBox" class="validation neutral">Chưa kiểm tra dữ liệu.</div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel3">
+      <div class="card">
+        <div class="eyebrow">BƯỚC 3</div>
+        <h2>Chính sách tính tiền</h2>
+        <p class="lead">Ba quy tắc chuẩn được lấy theo trường. Có thể thêm ngoại lệ lặp lại hoặc điều chỉnh một lần mà không phá cấu trúc tính toán.</p>
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>Quy tắc</th><th>Nguồn số lượng</th><th>Học phí</th><th>Dịch vụ bổ sung</th><th></th></tr></thead><tbody id="policyBody"></tbody></table></div>
+        <button class="btn top-gap" id="addRuleBtn">Thêm quy tắc ngoại lệ</button>
+      </div>
+      <div class="card">
+        <h2>Điều chỉnh một lần trong kỳ</h2>
+        <p class="lead">Dùng cho thưởng, hỗ trợ, bù kỳ trước hoặc giảm trừ đặc biệt. Khoản này chỉ thuộc hồ sơ hiện tại.</p>
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>Loại</th><th>Nội dung</th><th>Số tiền</th><th>Tham gia cơ sở tính chi trường</th><th></th></tr></thead><tbody id="adjustBody"></tbody></table></div>
+        <button class="btn top-gap" id="addAdjustBtn">Thêm điều chỉnh</button>
+      </div>
+      <div class="card">
+        <h2>Cơ chế chi cho trường</h2>
+        <div class="grid3"><div><label>Cơ sở tính</label><select id="commissionMode"><option value="net_tuition">% trên học phí sau điều chỉnh</option><option value="final">% trên tổng thực thu</option><option value="fixed">Số tiền cố định</option></select></div><div><label>Tỷ lệ (%)</label><input id="commissionPct" type="number" value="20" min="0" max="100"></div><div><label>Số tiền cố định</label><input id="commissionFixed" type="number" value="0" min="0"></div></div>
+        <div class="kpis top-gap"><div class="kpi"><span>Học phí</span><strong id="sumTuition">0</strong></div><div class="kpi"><span>Dịch vụ bổ sung</span><strong id="sumService">0</strong></div><div class="kpi"><span>Điều chỉnh</span><strong id="sumAdjust">0</strong></div><div class="kpi accent"><span>Đề nghị thanh toán</span><strong id="sumFinal">0</strong></div><div class="kpi"><span>Phiếu chi</span><strong id="sumCommission">0</strong></div></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel4">
+      <div class="preview-layout"><aside class="doc-list no-print"><button class="doc-btn active" data-doc="quantity">01. Bảng khối lượng</button><button class="doc-btn" data-doc="request">02. Đề nghị thanh toán</button><button class="doc-btn" data-doc="receipt">03. Phiếu thu</button><button class="doc-btn" data-doc="payment">04. Phiếu chi</button></aside><div class="preview" id="docPreview"></div></div>
+    </section>
+
+    <section class="panel" id="panel5">
+      <div class="card">
+        <div class="eyebrow">BƯỚC 5</div><h2>Xuất bộ hồ sơ</h2>
+        <p class="lead">Tên file mặc định gồm mã trường, kỳ thanh toán, thời điểm xuất và số phiên bản để tránh ghi đè.</p>
+        <div class="filename" id="fileNamePreview"></div>
+        <div class="button-row top-gap"><button class="btn primary" id="printBundleBtn">In / lưu PDF toàn bộ 4 chứng từ</button><button class="btn" id="printCurrentBtn">In chứng từ đang xem</button></div>
+      </div>
+    </section>
+  </div>
+</main>
+</div>
+<script src="./config.js?v=2.1.0"></script>
+<script src="./fallback-data.js?v=2.1.0"></script>
+<script src="./app.js?v=2.1.0"></script>
+</body>
+</html>
