@@ -4,98 +4,135 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LHP League 10 Years · Pre-order</title>
+<script src="./assets/logo10.js"></script>
+<script src="./assets/logo_alumni.js"></script>
+<script src="./assets/hero.js"></script>
+<script src="./assets/qr.js"></script>
+<script src="./assets/set200.js"></script>
+<script src="./assets/setvip.js"></script>
+<script src="./assets/ball.js"></script>
 <style>
 :root{--wine:#731417;--red:#a61f23;--gold:#c89b4b;--ink:#3f241d;--muted:#756159;--line:#ead8c6;--paper:#fffaf5}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#fbf8f2 0%,#f3e8dd 100%);font-family:Arial,sans-serif;color:var(--ink)}
-.container{max-width:1180px;margin:auto;padding:0 22px}.top{padding:12px 0;border-bottom:1px solid rgba(115,20,23,.1);background:rgba(255,250,244,.94);position:sticky;top:0;z-index:10;backdrop-filter:blur(8px)}
-.brand{display:flex;justify-content:space-between;align-items:center;gap:14px}.brand-left{display:flex;align-items:center;gap:12px}.logos{display:flex;align-items:center;gap:10px}.logos img{height:46px;width:auto;object-fit:contain;background:#fff;border-radius:12px;padding:5px;border:1px solid var(--line)}
-.brand strong{color:var(--wine);letter-spacing:.03em}.nav{display:flex;gap:14px}.nav a{text-decoration:none;color:var(--muted);font-size:14px}
-.hero{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;padding:42px 0 28px}.hero h1,.head h2{font-family:Georgia,serif;color:var(--wine)}.hero h1{font-size:62px;line-height:1.02;margin:0 0 18px}.hero p{color:var(--muted);line-height:1.78;font-size:17px;margin:0 0 14px}.hero img{width:100%;border-radius:24px;box-shadow:0 20px 50px rgba(70,20,20,.15)}
-.btn{display:inline-block;padding:13px 20px;border-radius:999px;background:linear-gradient(135deg,var(--wine),var(--red));color:#fff;text-decoration:none;font-weight:700;border:0;cursor:pointer}.btn.secondary{background:#fff7ed;color:var(--wine);border:1px solid var(--line)}
-.section{padding:34px 0}.head{margin-bottom:18px}.head h2{font-size:36px;margin:0 0 8px}.head p{margin:0;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.card{background:var(--paper);border-radius:22px;overflow:hidden;box-shadow:0 18px 44px rgba(89,41,28,.08);border:1px solid rgba(255,255,255,.9)}.card img{width:100%;aspect-ratio:4/3;object-fit:cover}.body{padding:18px}.body h3{font-family:Georgia,serif;color:var(--wine);font-size:26px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px;line-height:1.55}.price{font-size:27px;font-weight:800;color:var(--red);margin:12px 0}.body ul{padding-left:18px;line-height:1.7;color:#654941;min-height:126px}
-.order-wrap{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.panel{background:var(--paper);border-radius:22px;padding:22px;box-shadow:0 18px 44px rgba(89,41,28,.08)}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:12px}label{display:block;font-size:13px;font-weight:700;margin:0 0 6px}input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit}
-.pay{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}.pay img{width:100%;border-radius:16px;border:1px solid var(--line)}.pay h3{font-family:Georgia,serif;color:var(--wine);font-size:26px;margin:0 0 14px}.pay dl{margin:0;display:grid;gap:12px}.pay dt{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:800}.pay dd{margin:3px 0 0;font-size:17px;font-weight:700}.pay-note{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.6}
-footer{text-align:center;color:var(--muted);padding:34px 0 48px}.footer-logos{display:flex;justify-content:center;gap:12px;margin-bottom:14px}.footer-logos img{height:56px;width:auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:5px}
-@media(max-width:900px){.hero,.grid,.order-wrap,.pay{grid-template-columns:1fr}.hero h1{font-size:46px}.row{grid-template-columns:1fr}.brand{align-items:flex-start}.nav{display:none}.logos img{height:40px}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#fbf8f2,#f3e8dd);font-family:Arial,sans-serif;color:var(--ink)}
+.container{max-width:1180px;margin:auto;padding:0 22px}
+.top{position:sticky;top:0;z-index:30;background:rgba(255,250,244,.94);backdrop-filter:blur(9px);border-bottom:1px solid rgba(115,20,23,.1)}
+.topin{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 0}
+.logo-group{display:flex;align-items:center;gap:10px}.logo-badge{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 8px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(68,25,18,.06)}
+.logo-badge.logo10 img{height:48px;width:auto}.logo-badge.alumni img{height:44px;width:auto}.brandcopy strong{display:block;color:var(--wine);letter-spacing:.04em;font-size:15px}.brandcopy span{font-size:12px;color:var(--muted)}
+.nav{display:flex;gap:14px}.nav a{text-decoration:none;color:var(--muted);font-size:14px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;padding:40px 0 28px}.hero h1,.head h2{font-family:Georgia,serif;color:var(--wine)}.hero h1{font-size:62px;line-height:1.02;margin:0 0 18px}.hero p{color:var(--muted);line-height:1.78;font-size:17px;margin:0 0 14px}.hero img{width:100%;border-radius:24px;box-shadow:0 20px 50px rgba(70,20,20,.15)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 20px;border-radius:999px;background:linear-gradient(135deg,var(--wine),var(--red));color:#fff;text-decoration:none;font-weight:700;border:0;cursor:pointer}.btn.secondary{background:#fff7ed;color:var(--wine);border:1px solid var(--line)}.btn:disabled{opacity:.55;cursor:not-allowed}
+.section{padding:34px 0}.head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:18px}.head h2{font-size:36px;margin:0 0 8px}.head p{margin:0;color:var(--muted);max-width:610px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.card{background:var(--paper);border-radius:22px;overflow:hidden;box-shadow:0 18px 44px rgba(89,41,28,.08);border:1px solid rgba(255,255,255,.9)}.card img{width:100%;aspect-ratio:4/3;object-fit:cover}.body{padding:18px}.body h3{font-family:Georgia,serif;color:var(--wine);font-size:26px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px;line-height:1.55}.price-row{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:12px 0}.price{font-size:27px;font-weight:800;color:var(--red)}.stock{font-size:13px;font-weight:700;color:var(--wine);background:#faede7;border-radius:999px;padding:7px 10px}.body ul{padding-left:18px;line-height:1.7;color:#654941;min-height:126px}
+.order-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:start}.panel{background:var(--paper);border-radius:22px;padding:22px;box-shadow:0 18px 44px rgba(89,41,28,.08)}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:12px}label{display:block;font-size:13px;font-weight:700;margin:0 0 6px}input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit}
+.payment{display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:center}.payment img{width:180px;border-radius:16px;border:1px solid var(--line);background:#fff}.pay-info{display:grid;gap:10px}.pay-row{padding:10px 0;border-bottom:1px solid var(--line)}.pay-row:last-child{border-bottom:0}.pay-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:800}.pay-value{font-size:17px;font-weight:700;margin-top:3px}.pay-note{font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px}
+.notice{display:none;margin-top:14px;padding:14px 16px;border-radius:14px;line-height:1.55;font-size:14px}.notice.ok{display:block;background:#f4eadc;border:1px solid #e4c99d;color:var(--wine)}.notice.wait{display:block;background:#fff6e8;border:1px solid #edd8b0;color:#704b1e}.notice.err{display:block;background:#fff0ef;border:1px solid #efc7c4;color:#8c1e1e}
+.order-summary{display:none;margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff}.order-summary.show{display:block}.order-summary strong{color:var(--wine)}
+footer{text-align:center;color:var(--muted);padding:34px 0 48px}.footer-logos{display:flex;justify-content:center;gap:10px;margin-bottom:12px}.footer-logos img{height:54px;width:auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:5px}
+.hidden-frame{display:none}
+@media(max-width:900px){.hero,.grid,.order-wrap,.payment{grid-template-columns:1fr}.hero h1{font-size:46px}.row{grid-template-columns:1fr}.payment img{width:100%;max-width:280px;margin:auto}.head{display:block}.nav{display:none}.brandcopy span{display:none}}
 </style>
 </head>
 <body>
-<div class="top">
-  <div class="container brand">
-    <div class="brand-left">
-      <div class="logos">
-        <img src="https://drive.google.com/thumbnail?id=1COOF3H3EeDJ-M8yvq2IGD670kuiCNEEQ&sz=w400" alt="LHP League 10 Years">
-        <img src="https://drive.google.com/thumbnail?id=18sVf6d-ulE4kmVEfCbzaIXlpNhUiKEML&sz=w400" alt="Logo cựu học sinh Lê Hồng Phong Nam Định">
-      </div>
-      <strong>LHP League 10 Years</strong>
+<div class="top"><div class="container topin">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="logo-group">
+      <div class="logo-badge logo10"><img id="logo10" alt="LHP League 10 Years"></div>
+      <div class="logo-badge alumni"><img id="logoAlumni" alt="Cựu học sinh Lê Hồng Phong Nam Định"></div>
     </div>
-    <nav class="nav"><a href="#products">Sản phẩm</a><a href="#order">Đặt trước</a></nav>
+    <div class="brandcopy"><strong>LHP LEAGUE 10 YEARS</strong><span>Cựu học sinh Lê Hồng Phong · Nam Định</span></div>
   </div>
-</div>
+  <nav class="nav"><a href="#products">Sản phẩm</a><a href="#order">Đặt trước</a></nav>
+</div></div>
 
 <section class="container hero">
-  <div>
-    <h1>Từ cổng trường,<br>ra sân cỏ.</h1>
-    <p>Có những hình ảnh chỉ cần nhìn lại một lần là cả một quãng đời lập tức hiện về. Với nhiều người Lê Hồng Phong, đó là cổng trường, hàng cây, một lớp học, một người bạn.</p>
-    <p>Nhiều năm sau, chúng ta gặp lại nhau trên sân cỏ. LHP League vì thế không chỉ là một giải bóng đá. Nó là một lời hẹn đủ giản dị để những người đã đi rất xa vẫn tìm được đường trở về.</p>
-    <p>Bộ quà 10 năm được làm từ những ký ức ấy: cổng trường, sắc đỏ Thành Nam và những dấu nhỏ của mùa giải để mỗi người giữ lại cho mình một phần rất riêng.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
-      <a class="btn" href="#products">Xem 3 sản phẩm</a>
-      <a class="btn secondary" href="#order">Đặt trước</a>
-    </div>
-  </div>
-  <img src="https://drive.google.com/thumbnail?id=1-lG9wIRmv5dZHDakP5uhdQAOPQ-C7JkD&sz=w1600" alt="LHP League 10 Years">
+<div>
+  <h1>Từ cổng trường,<br>ra sân cỏ.</h1>
+  <p>Có những hình ảnh chỉ cần nhìn lại một lần là cả một quãng đời hiện về. Với người Lê Hồng Phong, đôi khi chỉ là chiếc cổng trường, một hàng cây, một người bạn.</p>
+  <p>Nhiều năm sau, chúng ta gặp lại nhau trên sân cỏ. LHP League vì thế không chỉ là bóng đá. Đó là một lời hẹn đủ giản dị để những người đã đi rất xa vẫn tìm được đường trở về.</p>
+  <p>Bộ quà 10 năm được làm từ những ký ức ấy: cổng trường, sắc đỏ Thành Nam và những dấu nhỏ của mùa giải để mỗi người giữ lại cho mình một phần rất riêng.</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px"><a class="btn" href="#products">Xem 3 sản phẩm</a><a class="btn secondary" href="#order">Đặt trước</a></div>
+</div>
+<img id="heroImage" alt="LHP League 10 Years">
 </section>
 
 <section class="section" id="products"><div class="container">
-<div class="head"><h2>3 sản phẩm mở đặt trước</h2><p>Gọn, đồng bộ và đủ để giữ lại một dấu mốc của mùa giải 10 năm.</p></div>
+<div class="head"><div><h2>3 sản phẩm mở đặt trước</h2><p>Gọn, đồng bộ và đủ để giữ lại một dấu mốc của mùa giải 10 năm.</p></div><div id="stockStatus" style="color:var(--muted);font-size:13px">Đang cập nhật số lượng...</div></div>
 <div class="grid">
-<article class="card">
-  <img src="https://drive.google.com/thumbnail?id=1OmZFg80ELnkHuOPVYrZuNEeCL6d2a4tN&sz=w1200" alt="Set Kỷ Niệm">
-  <div class="body"><h3>Set Kỷ Niệm</h3><div class="sub">Phiên bản gọn, phù hợp làm quà tặng và lưu niệm.</div><div class="price">200.000đ</div><ul><li>Khăn bandana</li><li>Huy hiệu thêu cài áo Lê Hồng Phong – Nam Định</li><li>Móc khóa mềm LHP League 10 Years</li><li>Túi giấy kỷ niệm</li></ul><a class="btn" href="#order">Chọn set này</a></div>
-</article>
-<article class="card">
-  <img src="https://drive.google.com/thumbnail?id=1X1JO9gwVBozKy3OTBmyuvqyTagR3GP8E&sz=w1200" alt="Set Kỷ Niệm VIP">
-  <div class="body"><h3>Set Kỷ Niệm VIP</h3><div class="sub">Phiên bản đầy đủ hơn, phù hợp trưng bày và giữ lâu.</div><div class="price">500.000đ</div><ul><li>Khăn bandana</li><li>Huy hiệu thêu cài áo Lê Hồng Phong – Nam Định</li><li>Móc khóa mềm LHP League 10 Years</li><li>Bộ cờ táp lô</li><li>Hộp quà cứng phiên bản 10 năm</li></ul><a class="btn" href="#order">Chọn set này</a></div>
-</article>
-<article class="card">
-  <img src="https://drive.google.com/thumbnail?id=1siTqD6xkxXspVFgS5DnQjtEKWl-LvVDz&sz=w1200" alt="Bóng Kỷ Niệm 2026">
-  <div class="body"><h3>Bóng Kỷ Niệm 2026</h3><div class="sub">Phiên bản giới hạn dành cho mùa giải 10 năm.</div><div class="price">1.000.000đ</div><ul><li>Phiên bản LHP League 2026</li><li>Số lượng giới hạn 20 quả</li><li>Phù hợp lưu niệm hoặc dành cho đội bóng</li></ul><a class="btn" href="#order">Chọn bóng</a></div>
-</article>
+<article class="card"><img id="imgSet200" alt="Set Kỷ Niệm"><div class="body"><h3>Set Kỷ Niệm</h3><div class="sub">Phiên bản gọn, phù hợp làm quà tặng và lưu niệm.</div><div class="price-row"><div class="price">200.000đ</div><div class="stock" id="stock-SET200">Còn 200/200</div></div><ul><li>Khăn bandana</li><li>Huy hiệu thêu cài áo Lê Hồng Phong – Nam Định</li><li>Móc khóa mềm LHP League 10 Years</li><li>Túi giấy kỷ niệm</li></ul><button class="btn" onclick="choose('SET200')">Chọn set này</button></div></article>
+<article class="card"><img id="imgSet500" alt="Set Kỷ Niệm VIP"><div class="body"><h3>Set Kỷ Niệm VIP</h3><div class="sub">Phiên bản đầy đủ hơn, phù hợp trưng bày và giữ lâu.</div><div class="price-row"><div class="price">500.000đ</div><div class="stock" id="stock-SET500">Còn 100/100</div></div><ul><li>Khăn bandana</li><li>Huy hiệu thêu cài áo Lê Hồng Phong – Nam Định</li><li>Móc khóa mềm LHP League 10 Years</li><li>Bộ cờ táp lô</li><li>Hộp quà cứng phiên bản 10 năm</li></ul><button class="btn" onclick="choose('SET500')">Chọn set này</button></div></article>
+<article class="card"><img id="imgBall" alt="Bóng Kỷ Niệm 2026"><div class="body"><h3>Bóng Kỷ Niệm 2026</h3><div class="sub">Phiên bản giới hạn dành cho mùa giải 10 năm.</div><div class="price-row"><div class="price">1.000.000đ</div><div class="stock" id="stock-BALL2026">Còn 20/20</div></div><ul><li>Phiên bản LHP League 2026</li><li>Số lượng giới hạn 20 quả</li><li>Phù hợp lưu niệm hoặc dành cho đội bóng</li></ul><button class="btn" onclick="choose('BALL2026')">Chọn bóng</button></div></article>
 </div></div></section>
 
 <section class="section" id="order"><div class="container">
-<div class="head"><h2>Đặt trước</h2><p>Điền thông tin và chuyển khoản để ban tổ chức xác nhận đơn.</p></div>
+<div class="head"><div><h2>Đặt trước</h2><p>Điền thông tin và chuyển khoản để ban tổ chức xác nhận đơn.</p></div></div>
 <div class="order-wrap">
   <div class="panel">
-    <div class="field"><label>Sản phẩm</label><select><option>Set Kỷ Niệm · 200.000đ</option><option>Set Kỷ Niệm VIP · 500.000đ</option><option>Bóng Kỷ Niệm 2026 · 1.000.000đ</option></select></div>
-    <div class="row"><div class="field"><label>Họ và tên</label><input></div><div class="field"><label>Số điện thoại</label><input></div></div>
-    <div class="row"><div class="field"><label>Khóa / niên khóa</label><input></div><div class="field"><label>Số lượng</label><input type="number" min="1" value="1"></div></div>
-    <div class="field"><label>Cách nhận</label><select><option>Nhận tại sự kiện</option><option>Gửi vận chuyển</option></select></div>
-    <button class="btn">Gửi thông tin đặt trước</button>
+    <form id="orderForm" method="post" target="submitFrame">
+      <div class="field"><label>Sản phẩm</label><select id="sku" name="sku"><option value="SET200">Set Kỷ Niệm · 200.000đ</option><option value="SET500">Set Kỷ Niệm VIP · 500.000đ</option><option value="BALL2026">Bóng Kỷ Niệm 2026 · 1.000.000đ</option></select></div>
+      <div class="row"><div class="field"><label>Họ và tên</label><input name="fullName" required></div><div class="field"><label>Số điện thoại</label><input name="phone" placeholder="09xxxxxxxx" required></div></div>
+      <div class="row"><div class="field"><label>Khóa / niên khóa</label><input name="cohort" placeholder="VD: 94–97"></div><div class="field"><label>Số lượng</label><input name="quantity" type="number" min="1" value="1" required></div></div>
+      <div class="field"><label>Cách nhận</label><select name="deliveryMethod"><option value="PICKUP">Nhận tại sự kiện</option><option value="SHIP">Gửi vận chuyển</option></select></div>
+      <div class="field"><label>Ghi chú</label><textarea name="note" rows="3"></textarea></div>
+      <button class="btn" id="submitBtn" type="submit">Gửi thông tin đặt trước</button>
+      <div id="notice" class="notice"></div>
+      <div id="orderSummary" class="order-summary"></div>
+    </form>
+    <iframe class="hidden-frame" name="submitFrame" id="submitFrame"></iframe>
   </div>
 
-  <div class="panel pay">
-    <img src="https://drive.google.com/thumbnail?id=1Njl9QvMvaynb-SlHGh4Hmf2hSy9Vzvep&sz=w900" alt="QR chuyển khoản Vietcombank">
-    <div>
-      <h3>Thông tin chuyển khoản</h3>
-      <dl>
-        <div><dt>Chủ tài khoản</dt><dd>Nguyễn Thị Thuý</dd></div>
-        <div><dt>Số tài khoản</dt><dd>0021001140679</dd></div>
-        <div><dt>Ngân hàng</dt><dd>Vietcombank Hà Nội</dd></div>
-      </dl>
-      <div class="pay-note">Nội dung chuyển khoản gợi ý: <strong>Họ tên - SĐT - sản phẩm</strong>. Ban tổ chức sẽ đối chiếu và xác nhận đơn sau khi nhận được chuyển khoản.</div>
+  <div class="panel">
+    <div class="payment">
+      <img id="qrImage" alt="QR Vietcombank">
+      <div>
+        <h3 style="font-family:Georgia,serif;color:var(--wine);font-size:25px;margin:0 0 10px">Chuyển khoản</h3>
+        <div class="pay-info">
+          <div class="pay-row"><div class="pay-label">Chủ tài khoản</div><div class="pay-value">Nguyễn Thị Thuý</div></div>
+          <div class="pay-row"><div class="pay-label">Số tài khoản</div><div class="pay-value">0021001140679</div></div>
+          <div class="pay-row"><div class="pay-label">Ngân hàng</div><div class="pay-value">Vietcombank Hà Nội</div></div>
+        </div>
+        <div class="pay-note">Sau khi gửi đơn, website sẽ trả mã đơn và nội dung chuyển khoản. Ban tổ chức đối chiếu giao dịch để xác nhận.</div>
+      </div>
     </div>
   </div>
 </div></div></section>
 
-<footer><div class="container">
-  <div class="footer-logos">
-    <img src="https://drive.google.com/thumbnail?id=1COOF3H3EeDJ-M8yvq2IGD670kuiCNEEQ&sz=w400" alt="LHP League 10 Years">
-    <img src="https://drive.google.com/thumbnail?id=18sVf6d-ulE4kmVEfCbzaIXlpNhUiKEML&sz=w400" alt="Logo cựu học sinh">
-  </div>
-  Thành Nam luôn trong tim · Một thời Lê Hồng Phong, một đời để nhớ.
-</div></footer>
-</body>
-</html>
+<footer><div class="container"><div class="footer-logos"><img id="footerLogo10" alt=""><img id="footerLogoAlumni" alt=""></div>Thành Nam luôn trong tim · Một thời Lê Hồng Phong, một đời để nhớ.</div></footer>
+
+<script>
+const LHP_API_URL = '';
+const DEFAULT_INV={SET200:{quota:200,available:200},SET500:{quota:100,available:100},BALL2026:{quota:20,available:20}};
+document.getElementById('logo10').src=window.ASSET_LOGO10; document.getElementById('footerLogo10').src=window.ASSET_LOGO10;
+document.getElementById('logoAlumni').src=window.ASSET_LOGO_ALUMNI; document.getElementById('footerLogoAlumni').src=window.ASSET_LOGO_ALUMNI;
+document.getElementById('heroImage').src=window.ASSET_HERO;
+document.getElementById('qrImage').src=window.ASSET_QR;
+document.getElementById('imgSet200').src=window.ASSET_SET200;
+document.getElementById('imgSet500').src=window.ASSET_SET500;
+document.getElementById('imgBall').src=window.ASSET_BALL;
+
+function choose(sku){document.getElementById('sku').value=sku;document.getElementById('order').scrollIntoView({behavior:'smooth'});}
+function applyInventory(inv){['SET200','SET500','BALL2026'].forEach(s=>{const x=inv[s]||DEFAULT_INV[s];document.getElementById('stock-'+s).textContent='Còn '+x.available+'/'+x.quota;});document.getElementById('stockStatus').textContent='Số lượng được cập nhật theo đơn đã giữ và đã thanh toán.';}
+function refreshInventory(){
+  if(!LHP_API_URL){applyInventory(DEFAULT_INV);document.getElementById('stockStatus').textContent='Số lượng khởi tạo. Kết nối đơn hàng đang chờ kích hoạt.';return;}
+  const cb='lhpInv_'+Date.now(); window[cb]=data=>{if(data&&data.ok)applyInventory(data.inventory);delete window[cb];script.remove();};
+  const script=document.createElement('script');script.src=LHP_API_URL+'?callback='+cb+'&t='+Date.now();script.onerror=()=>{delete window[cb];script.remove();};document.body.appendChild(script);
+}
+function showNotice(type,msg){const n=document.getElementById('notice');n.className='notice '+type;n.textContent=msg;}
+document.getElementById('orderForm').addEventListener('submit',e=>{
+  if(!LHP_API_URL){e.preventDefault();showNotice('wait','Đơn hàng chưa được gửi vì kết nối Google Sheet chưa được kích hoạt.');return;}
+  e.currentTarget.action=LHP_API_URL;
+  const b=document.getElementById('submitBtn');b.disabled=true;b.textContent='Đang gửi...';showNotice('wait','Đang ghi nhận đơn hàng, vui lòng chờ vài giây...');
+});
+window.addEventListener('message',e=>{
+  const b=document.getElementById('submitBtn');b.disabled=false;b.textContent='Gửi thông tin đặt trước';
+  const d=e.data;if(!d||typeof d!=='object'||!('ok' in d))return;
+  if(d.ok){
+    showNotice('ok','Đặt trước thành công. Mã đơn: '+d.orderId+'.');
+    const box=document.getElementById('orderSummary');box.classList.add('show');box.innerHTML='<strong>'+d.productName+'</strong><br>Số lượng: '+d.quantity+'<br>Tổng tiền: '+d.totalText+'<br>Giữ đến: '+d.expiresAt+'<br>Nội dung chuyển khoản: <strong>'+d.transferContent+'</strong>';
+    if(d.inventory)applyInventory(d.inventory); else refreshInventory();
+    document.getElementById('orderForm').reset();
+  }else showNotice('err',d.message||'Có lỗi khi ghi nhận đơn. Vui lòng thử lại.');
+});
+refreshInventory(); setInterval(refreshInventory,30000);
+</script>
+</body></html>
