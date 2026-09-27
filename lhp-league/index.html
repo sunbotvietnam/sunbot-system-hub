@@ -5,51 +5,97 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LHP League 10 Years · Pre-order</title>
 <style>
-:root{--wine:#731417;--red:#a61f23;--gold:#c89b4b;--ink:#3f241d;--muted:#756159;--line:#ead8c6}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#fbf8f2,#f3e8dd);font-family:Arial,sans-serif;color:var(--ink)}
-.container{max-width:1180px;margin:auto;padding:0 22px}.top{padding:14px 0;border-bottom:1px solid rgba(115,20,23,.1);background:rgba(255,250,244,.94);position:sticky;top:0;z-index:10}
-.brand{display:flex;align-items:center;gap:12px}.brand img{height:48px}.hero{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;padding:42px 0 30px}
-.hero h1,.head h2{font-family:Georgia,serif;color:var(--wine)}.hero h1{font-size:64px;line-height:1;margin:0 0 18px}.hero p{color:var(--muted);line-height:1.75}
-.hero img{width:100%;border-radius:24px;box-shadow:0 20px 50px rgba(70,20,20,.15)}.btn{display:inline-block;padding:13px 20px;border-radius:999px;background:linear-gradient(135deg,var(--wine),var(--red));color:#fff;text-decoration:none;font-weight:700;border:0;cursor:pointer}
+:root{--wine:#731417;--red:#a61f23;--gold:#c89b4b;--ink:#3f241d;--muted:#756159;--line:#ead8c6;--paper:#fffaf5}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#fbf8f2 0%,#f3e8dd 100%);font-family:Arial,sans-serif;color:var(--ink)}
+.container{max-width:1180px;margin:auto;padding:0 22px}.top{padding:12px 0;border-bottom:1px solid rgba(115,20,23,.1);background:rgba(255,250,244,.94);position:sticky;top:0;z-index:10;backdrop-filter:blur(8px)}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:14px}.brand-left{display:flex;align-items:center;gap:12px}.logos{display:flex;align-items:center;gap:10px}.logos img{height:46px;width:auto;object-fit:contain;background:#fff;border-radius:12px;padding:5px;border:1px solid var(--line)}
+.brand strong{color:var(--wine);letter-spacing:.03em}.nav{display:flex;gap:14px}.nav a{text-decoration:none;color:var(--muted);font-size:14px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;padding:42px 0 28px}.hero h1,.head h2{font-family:Georgia,serif;color:var(--wine)}.hero h1{font-size:62px;line-height:1.02;margin:0 0 18px}.hero p{color:var(--muted);line-height:1.78;font-size:17px;margin:0 0 14px}.hero img{width:100%;border-radius:24px;box-shadow:0 20px 50px rgba(70,20,20,.15)}
+.btn{display:inline-block;padding:13px 20px;border-radius:999px;background:linear-gradient(135deg,var(--wine),var(--red));color:#fff;text-decoration:none;font-weight:700;border:0;cursor:pointer}.btn.secondary{background:#fff7ed;color:var(--wine);border:1px solid var(--line)}
 .section{padding:34px 0}.head{margin-bottom:18px}.head h2{font-size:36px;margin:0 0 8px}.head p{margin:0;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.card{background:#fffaf5;border-radius:22px;overflow:hidden;box-shadow:0 18px 44px rgba(89,41,28,.08)}
-.card img{width:100%;aspect-ratio:4/3;object-fit:cover}.body{padding:18px}.body h3{font-family:Georgia,serif;color:var(--wine);font-size:26px;margin:0 0 6px}.price{font-size:27px;font-weight:800;color:var(--red);margin:12px 0}.body ul{padding-left:18px;line-height:1.7;color:#654941;min-height:126px}
-.order{background:#fffaf5;border-radius:22px;padding:22px;box-shadow:0 18px 44px rgba(89,41,28,.08)}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:12px}label{display:block;font-size:13px;font-weight:700;margin:0 0 6px}input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:white}
-footer{text-align:center;color:var(--muted);padding:34px 0 48px}
-@media(max-width:900px){.hero,.grid{grid-template-columns:1fr}.hero h1{font-size:46px}.row{grid-template-columns:1fr}}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.card{background:var(--paper);border-radius:22px;overflow:hidden;box-shadow:0 18px 44px rgba(89,41,28,.08);border:1px solid rgba(255,255,255,.9)}.card img{width:100%;aspect-ratio:4/3;object-fit:cover}.body{padding:18px}.body h3{font-family:Georgia,serif;color:var(--wine);font-size:26px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px;line-height:1.55}.price{font-size:27px;font-weight:800;color:var(--red);margin:12px 0}.body ul{padding-left:18px;line-height:1.7;color:#654941;min-height:126px}
+.order-wrap{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.panel{background:var(--paper);border-radius:22px;padding:22px;box-shadow:0 18px 44px rgba(89,41,28,.08)}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:12px}label{display:block;font-size:13px;font-weight:700;margin:0 0 6px}input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit}
+.pay{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}.pay img{width:100%;border-radius:16px;border:1px solid var(--line)}.pay h3{font-family:Georgia,serif;color:var(--wine);font-size:26px;margin:0 0 14px}.pay dl{margin:0;display:grid;gap:12px}.pay dt{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:800}.pay dd{margin:3px 0 0;font-size:17px;font-weight:700}.pay-note{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.6}
+footer{text-align:center;color:var(--muted);padding:34px 0 48px}.footer-logos{display:flex;justify-content:center;gap:12px;margin-bottom:14px}.footer-logos img{height:56px;width:auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:5px}
+@media(max-width:900px){.hero,.grid,.order-wrap,.pay{grid-template-columns:1fr}.hero h1{font-size:46px}.row{grid-template-columns:1fr}.brand{align-items:flex-start}.nav{display:none}.logos img{height:40px}}
 </style>
-<script src="./assets/logo10.js"></script>
 </head>
 <body>
-<div class="top"><div class="container brand"><img id="logo10" alt="LHP League 10 Years"><strong>LHP League 10 Years · Cựu học sinh Lê Hồng Phong Nam Định</strong></div></div>
+<div class="top">
+  <div class="container brand">
+    <div class="brand-left">
+      <div class="logos">
+        <img src="https://drive.google.com/thumbnail?id=1COOF3H3EeDJ-M8yvq2IGD670kuiCNEEQ&sz=w400" alt="LHP League 10 Years">
+        <img src="https://drive.google.com/thumbnail?id=18sVf6d-ulE4kmVEfCbzaIXlpNhUiKEML&sz=w400" alt="Logo cựu học sinh Lê Hồng Phong Nam Định">
+      </div>
+      <strong>LHP League 10 Years</strong>
+    </div>
+    <nav class="nav"><a href="#products">Sản phẩm</a><a href="#order">Đặt trước</a></nav>
+  </div>
+</div>
 
 <section class="container hero">
-<div>
-<h1>Từ cổng trường,<br>ra sân cỏ.</h1>
-<p>Mỗi người Lê Hồng Phong có một ký ức riêng về trường. Một lớp học, một hàng cây, một người bạn, hay chỉ là chiếc cổng nhìn một lần là nhớ cả một quãng tuổi trẻ.</p>
-<p>Nhiều năm sau, chúng ta gặp lại nhau trên sân cỏ. Ở mốc 10 năm, bộ quà kỷ niệm được làm từ những hình ảnh quen thuộc ấy: cổng trường, màu đỏ, khăn, huy hiệu, cờ và những chi tiết của mùa giải.</p>
-<a class="btn" href="#products">Xem 3 sản phẩm</a>
-</div>
-<img src="https://drive.google.com/thumbnail?id=1mokQatHhbJ0gcP154pMNII6cQ4SygxRw&sz=w1600" alt="LHP League">
+  <div>
+    <h1>Từ cổng trường,<br>ra sân cỏ.</h1>
+    <p>Có những hình ảnh chỉ cần nhìn lại một lần là cả một quãng đời lập tức hiện về. Với nhiều người Lê Hồng Phong, đó là cổng trường, hàng cây, một lớp học, một người bạn.</p>
+    <p>Nhiều năm sau, chúng ta gặp lại nhau trên sân cỏ. LHP League vì thế không chỉ là một giải bóng đá. Nó là một lời hẹn đủ giản dị để những người đã đi rất xa vẫn tìm được đường trở về.</p>
+    <p>Bộ quà 10 năm được làm từ những ký ức ấy: cổng trường, sắc đỏ Thành Nam và những dấu nhỏ của mùa giải để mỗi người giữ lại cho mình một phần rất riêng.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+      <a class="btn" href="#products">Xem 3 sản phẩm</a>
+      <a class="btn secondary" href="#order">Đặt trước</a>
+    </div>
+  </div>
+  <img src="https://drive.google.com/thumbnail?id=1-lG9wIRmv5dZHDakP5uhdQAOPQ-C7JkD&sz=w1600" alt="LHP League 10 Years">
 </section>
 
 <section class="section" id="products"><div class="container">
-<div class="head"><h2>3 sản phẩm mở đặt trước</h2><p>Gọn, đồng bộ và dễ lưu giữ.</p></div>
+<div class="head"><h2>3 sản phẩm mở đặt trước</h2><p>Gọn, đồng bộ và đủ để giữ lại một dấu mốc của mùa giải 10 năm.</p></div>
 <div class="grid">
-<article class="card"><img src="https://drive.google.com/thumbnail?id=1OmZFg80ELnkHuOPVYrZuNEeCL6d2a4tN&sz=w1200"><div class="body"><h3>Set Kỷ Niệm</h3><div class="price">200.000đ</div><ul><li>Khăn bandana</li><li>Huy hiệu thêu cài áo Lê Hồng Phong – Nam Định</li><li>Móc khóa mềm LHP League 10 Years</li><li>Túi giấy kỷ niệm</li></ul><a class="btn" href="#order">Chọn set này</a></div></article>
-<article class="card"><img src="https://drive.google.com/thumbnail?id=1X1JO9gwVBozKy3OTBmyuvqyTagR3GP8E&sz=w1200"><div class="body"><h3>Set Kỷ Niệm VIP</h3><div class="price">500.000đ</div><ul><li>Khăn bandana</li><li>Huy hiệu thêu cài áo Lê Hồng Phong – Nam Định</li><li>Móc khóa mềm LHP League 10 Years</li><li>Bộ cờ táp lô</li><li>Hộp quà cứng phiên bản 10 năm</li></ul><a class="btn" href="#order">Chọn set này</a></div></article>
-<article class="card"><img src="https://drive.google.com/thumbnail?id=1siTqD6xkxXspVFgS5DnQjtEKWl-LvVDz&sz=w1200"><div class="body"><h3>Bóng Kỷ Niệm 2026</h3><div class="price">1.000.000đ</div><ul><li>Phiên bản LHP League 2026</li><li>Số lượng giới hạn 20 quả</li><li>Phù hợp lưu niệm hoặc dành cho đội bóng</li></ul><a class="btn" href="#order">Chọn bóng</a></div></article>
+<article class="card">
+  <img src="https://drive.google.com/thumbnail?id=1OmZFg80ELnkHuOPVYrZuNEeCL6d2a4tN&sz=w1200" alt="Set Kỷ Niệm">
+  <div class="body"><h3>Set Kỷ Niệm</h3><div class="sub">Phiên bản gọn, phù hợp làm quà tặng và lưu niệm.</div><div class="price">200.000đ</div><ul><li>Khăn bandana</li><li>Huy hiệu thêu cài áo Lê Hồng Phong – Nam Định</li><li>Móc khóa mềm LHP League 10 Years</li><li>Túi giấy kỷ niệm</li></ul><a class="btn" href="#order">Chọn set này</a></div>
+</article>
+<article class="card">
+  <img src="https://drive.google.com/thumbnail?id=1X1JO9gwVBozKy3OTBmyuvqyTagR3GP8E&sz=w1200" alt="Set Kỷ Niệm VIP">
+  <div class="body"><h3>Set Kỷ Niệm VIP</h3><div class="sub">Phiên bản đầy đủ hơn, phù hợp trưng bày và giữ lâu.</div><div class="price">500.000đ</div><ul><li>Khăn bandana</li><li>Huy hiệu thêu cài áo Lê Hồng Phong – Nam Định</li><li>Móc khóa mềm LHP League 10 Years</li><li>Bộ cờ táp lô</li><li>Hộp quà cứng phiên bản 10 năm</li></ul><a class="btn" href="#order">Chọn set này</a></div>
+</article>
+<article class="card">
+  <img src="https://drive.google.com/thumbnail?id=1siTqD6xkxXspVFgS5DnQjtEKWl-LvVDz&sz=w1200" alt="Bóng Kỷ Niệm 2026">
+  <div class="body"><h3>Bóng Kỷ Niệm 2026</h3><div class="sub">Phiên bản giới hạn dành cho mùa giải 10 năm.</div><div class="price">1.000.000đ</div><ul><li>Phiên bản LHP League 2026</li><li>Số lượng giới hạn 20 quả</li><li>Phù hợp lưu niệm hoặc dành cho đội bóng</li></ul><a class="btn" href="#order">Chọn bóng</a></div>
+</article>
 </div></div></section>
 
-<section class="section"><div class="container order" id="order">
-<div class="head"><h2>Đặt trước</h2><p>Điền thông tin để ban tổ chức ghi nhận đơn.</p></div>
-<div class="field"><label>Sản phẩm</label><select><option>Set Kỷ Niệm · 200.000đ</option><option>Set Kỷ Niệm VIP · 500.000đ</option><option>Bóng Kỷ Niệm 2026 · 1.000.000đ</option></select></div>
-<div class="row"><div class="field"><label>Họ và tên</label><input></div><div class="field"><label>Số điện thoại</label><input></div></div>
-<div class="row"><div class="field"><label>Khóa / niên khóa</label><input></div><div class="field"><label>Số lượng</label><input type="number" min="1" value="1"></div></div>
-<div class="field"><label>Cách nhận</label><select><option>Nhận tại sự kiện</option><option>Gửi vận chuyển</option></select></div>
-<button class="btn">Gửi thông tin đặt trước</button>
-</div></section>
-<footer>Thành Nam luôn trong tim · LHP League 10 Years</footer>
-<script>document.getElementById('logo10').src=window.ASSET_LOGO10;</script>
+<section class="section" id="order"><div class="container">
+<div class="head"><h2>Đặt trước</h2><p>Điền thông tin và chuyển khoản để ban tổ chức xác nhận đơn.</p></div>
+<div class="order-wrap">
+  <div class="panel">
+    <div class="field"><label>Sản phẩm</label><select><option>Set Kỷ Niệm · 200.000đ</option><option>Set Kỷ Niệm VIP · 500.000đ</option><option>Bóng Kỷ Niệm 2026 · 1.000.000đ</option></select></div>
+    <div class="row"><div class="field"><label>Họ và tên</label><input></div><div class="field"><label>Số điện thoại</label><input></div></div>
+    <div class="row"><div class="field"><label>Khóa / niên khóa</label><input></div><div class="field"><label>Số lượng</label><input type="number" min="1" value="1"></div></div>
+    <div class="field"><label>Cách nhận</label><select><option>Nhận tại sự kiện</option><option>Gửi vận chuyển</option></select></div>
+    <button class="btn">Gửi thông tin đặt trước</button>
+  </div>
+
+  <div class="panel pay">
+    <img src="https://drive.google.com/thumbnail?id=1Njl9QvMvaynb-SlHGh4Hmf2hSy9Vzvep&sz=w900" alt="QR chuyển khoản Vietcombank">
+    <div>
+      <h3>Thông tin chuyển khoản</h3>
+      <dl>
+        <div><dt>Chủ tài khoản</dt><dd>Nguyễn Thị Thuý</dd></div>
+        <div><dt>Số tài khoản</dt><dd>0021001140679</dd></div>
+        <div><dt>Ngân hàng</dt><dd>Vietcombank Hà Nội</dd></div>
+      </dl>
+      <div class="pay-note">Nội dung chuyển khoản gợi ý: <strong>Họ tên - SĐT - sản phẩm</strong>. Ban tổ chức sẽ đối chiếu và xác nhận đơn sau khi nhận được chuyển khoản.</div>
+    </div>
+  </div>
+</div></div></section>
+
+<footer><div class="container">
+  <div class="footer-logos">
+    <img src="https://drive.google.com/thumbnail?id=1COOF3H3EeDJ-M8yvq2IGD670kuiCNEEQ&sz=w400" alt="LHP League 10 Years">
+    <img src="https://drive.google.com/thumbnail?id=18sVf6d-ulE4kmVEfCbzaIXlpNhUiKEML&sz=w400" alt="Logo cựu học sinh">
+  </div>
+  Thành Nam luôn trong tim · Một thời Lê Hồng Phong, một đời để nhớ.
+</div></footer>
 </body>
 </html>
