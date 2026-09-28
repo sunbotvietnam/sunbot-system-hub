@@ -194,10 +194,23 @@ const API_URL='https://script.google.com/macros/s/AKfycbylgzG3WrNed_FY3Iz62MEcph
 function toggleStory(){const x=document.getElementById('storyExtra'),b=document.getElementById('readMoreBtn');const open=x.classList.toggle('open');b.textContent=open?'Thu gọn':'Đọc tiếp';}
 function selectProduct(sku){document.getElementById('sku').value=sku;document.getElementById('order').scrollIntoView({behavior:'smooth'});}
 function toggleShipping(){document.getElementById('shippingFields').style.display=document.getElementById('deliveryMethod').value==='SHIP'?'block':'none';}
-function renderStock(data){if(!data||!data.products)return;data.products.forEach(p=>{const el=document.getElementById('stock'+p.sku);if(el)el.textContent=p.available+(p.sku==='BALL2026'?' quả còn lại':' bộ còn lại');});}
-function jsonp(action,params={}){return new Promise((resolve,reject)=>{const cb='lhp_cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);const s=document.createElement('script');const timer=setTimeout(()=>{cleanup();reject(new Error('Không nhận được phản hồi từ hệ thống đơn hàng.'));},10000);function cleanup(){clearTimeout(timer);delete window[cb];s.remove();}window[cb]=(data)=>{cleanup();data&&data.ok===false?reject(new Error(data.error||'Có lỗi xảy ra.')):resolve(data);};const q=new URLSearchParams({action,callback:cb,...params});s.src=API_URL+'?'+q.toString();s.onerror=()=>{cleanup();reject(new Error('Không kết nối được hệ thống đơn hàng.'));};document.body.appendChild(s);});}
-async function refreshStock(){try{renderStock(await jsonp('siteData'));}catch(e){console.warn(e);}}
-refreshStock();
-document.getElementById('orderForm').addEventListener('submit',async function(e){e.preventDefault();const b=document.getElementById('submitButton'),m=document.getElementById('successMessage');b.disabled=true;b.textContent='Đang ghi nhận...';m.style.display='none';const payload={sku:document.getElementById('sku').value,fullName:document.getElementById('fullName').value.trim(),phone:document.getElementById('phone').value.trim(),cohort:document.getElementById('cohort').value.trim(),quantity:Number(document.getElementById('quantity').value),deliveryMethod:document.getElementById('deliveryMethod').value,shippingName:document.getElementById('shippingName').value.trim(),shippingPhone:document.getElementById('shippingPhone').value.trim(),shippingAddress:document.getElementById('shippingAddress').value.trim(),note:document.getElementById('note').value.trim()};try{const r=await jsonp('submit',{payload:JSON.stringify(payload)});b.disabled=false;b.textContent='Gửi thông tin đặt trước';m.style.display='block';m.innerHTML='<strong>Đã ghi nhận đơn '+r.orderId+'.</strong><br>'+r.productName+' · '+r.quantity+'<br>Tổng tiền: '+r.totalText+'<br>Vui lòng chuyển khoản với nội dung: <strong>'+r.transferContent+'</strong>';document.getElementById('transferContent').textContent=r.transferContent;await refreshStock();}catch(err){b.disabled=false;b.textContent='Gửi thông tin đặt trước';alert(err&&err.message?err.message:'Có lỗi xảy ra. Vui lòng thử lại.');}});
+document.getElementById('orderForm').addEventListener('submit',async function(e){
+ e.preventDefault();
+ const b=document.getElementById('submitButton'),m=document.getElementById('successMessage');
+ b.disabled=true;b.textContent='Đang ghi nhận...';m.style.display='none';
+ const payload={requestId:'WEB-'+Date.now()+'-'+Math.random().toString(36).slice(2,8).toUpperCase(),sku:document.getElementById('sku').value,fullName:document.getElementById('fullName').value.trim(),phone:document.getElementById('phone').value.trim(),cohort:document.getElementById('cohort').value.trim(),quantity:Number(document.getElementById('quantity').value),deliveryMethod:document.getElementById('deliveryMethod').value,shippingName:document.getElementById('shippingName').value.trim(),shippingPhone:document.getElementById('shippingPhone').value.trim(),shippingAddress:document.getElementById('shippingAddress').value.trim(),note:document.getElementById('note').value.trim()};
+ try{
+  const body=new URLSearchParams({payload:JSON.stringify(payload)});
+  await fetch(API_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body});
+  b.disabled=false;b.textContent='Gửi thông tin đặt trước';
+  m.style.display='block';
+  m.innerHTML='<strong>Đã gửi thông tin đặt trước.</strong><br>Hệ thống đã chuyển đơn tới ban tổ chức.<br>Nội dung chuyển khoản: <strong>'+payload.phone+'</strong>';
+  document.getElementById('transferContent').textContent=payload.phone;
+  document.getElementById('orderForm').reset();toggleShipping();
+ }catch(err){
+  b.disabled=false;b.textContent='Gửi thông tin đặt trước';
+  alert('Không gửi được đơn. Vui lòng thử lại.');
+ }
+});
 </script>
 </body></html>
