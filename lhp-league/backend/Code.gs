@@ -1,126 +1,276 @@
-const SPREADSHEET_ID = '1Zdkx5uSRLyo90UGNu4_JTB4F8TvuGzq6gvnys97Vx-8';
-const SHEETS = { orders:'ORDERS', products:'PRODUCTS', settings:'SETTINGS' };
+const CFG = {
+  PRODUCTS: 'PRODUCTS',
+  ORDERS: 'ORDERS',
+  SETTINGS: 'SETTINGS',
+  RESERVATION_HOURS: 24
+};
 
 function doGet(e) {
-  const p = e && e.parameter ? e.parameter : {};
-  const callback = String(p.callback || 'lhpInventoryCallback');
-  if (!/^[A-Za-z_$][0-9A-Za-z_$\.]*$/.test(callback)) {
-    return ContentService.createTextOutput('/* invalid callback */').setMimeType(ContentService.MimeType.JAVASCRIPT);
+  expireReservations();
+
+  const callback = e && e.parameter ? String(e.parameter.callback || '') : '';
+  if (callback) {
+    if (!/^[A-Za-z_$][0-9A-Za-z_$\.]*$/.test(callback)) {
+      return ContentService
+        .createTextOutput('/* invalid callback */')
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    }
+
+    const payload = {
+      ok: true,
+      inventory: getInventoryObject_(),
+      ts: new Date().toISOString()
+    };
+
+    return ContentService
+      .createTextOutput(callback + '(' + JSON.stringify(payload) + ');')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
   }
-  expireReservations_();
-  const data = { ok:true, inventory:getInventory_(), ts:new Date().toISOString() };
-  return ContentService.createTextOutput(callback + '(' + JSON.stringify(data) + ');')
-    .setMimeType(ContentService.MimeType.JAVASCRIPT);
+
+  return HtmlService.createHtmlOutputFromFile('Index')
+    .setTitle('LHP League 10 Years · Pre-order')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
-function doPost(e) {
+function setupDatabase() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const products = ensureSheet_(ss, CFG.PRODUCTS, [
+    'sku','name','price','quota','active'
+  ]);
+  const orders = ensureSheet_(ss, CFG.ORDERS, [
+    'order_id','created_at','full_name','phone','cohort','sku','product_name','quantity','unit_price','total',
+    'delivery_method','shipping_name','shipping_phone','shipping_address','note','order_status','payment_status','expires_at'
+  ]);
+  const settings = ensureSheet_(ss, CFG.SETTINGS, ['key','value']);
+
+  if (products.getLastRow() < 2) {
+    products.getRange(2,1,3,5).setValues([
+      ['SET200','Set Kỷ Niệm 200',200000,200,true],
+      ['SET500','Set Kỷ Niệm VIP 500',500000,100,true],
+      ['BALL2026','Bóng Kỷ Niệm 2026',1000000,20,true]
+    ]);
+  }
+
+  if (settings.getLastRow() < 2) {
+    settings.getRange(2,1,9,2).setValues([
+      ['reservation_hours',24],
+      ['bank_account_name','Nguyễn Thị Thuý'],
+      ['bank_name','Vietcombank Hà Nội'],
+      ['bank_number','0021001140679'],
+      ['transfer_note','Mã đơn + SĐT'],
+      ['close_date','Đến khi đủ số lượng đặt trước'],
+      ['pickup_note','Nhận tại sự kiện hoặc gửi theo địa chỉ đăng ký'],
+      ['event_name','LHP League 10 Years'],
+      ['event_years','2016–2026']
+    ]);
+  }
+
+  styleSheet_(products);
+  styleSheet_(orders);
+  styleSheet_(settings);
+  return 'Đã khởi tạo dữ liệu.';
+}
+
+function getSiteData() {
+  expireReservations();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const products = rowsToObjects_(ss.getSheetByName(CFG.PRODUCTS).getDataRange().getValues())
+    .filter(r => String(r.active).toLowerCase() !== 'false')
+    .map(p => ({
+      sku: p.sku,
+      name: p.name,
+      price: Number(p.price),
+      quota: Number(p.quota),
+      ...inventoryFor_(p.sku, Number(p.quota))
+    }));
+  const settings = settingsObject_(ss.getSheetByName(CFG.SETTINGS));
+  return {products, settings};
+}
+
+function submitOrder(payload) {
   const lock = LockService.getScriptLock();
   lock.waitLock(15000);
-  let result;
   try {
-    expireReservations_();
-    const p = e.parameter || {};
-    const payload = {
-      fullName:String(p.fullName || '').trim(),
-      phone:String(p.phone || '').trim(),
-      cohort:String(p.cohort || '').trim(),
-      sku:String(p.sku || '').trim(),
-      quantity:Number(p.quantity || 1),
-      deliveryMethod:String(p.deliveryMethod || 'PICKUP'),
-      shippingName:String(p.shippingName || '').trim(),
-      shippingPhone:String(p.shippingPhone || '').trim(),
-      shippingAddress:String(p.shippingAddress || '').trim(),
-      note:String(p.note || '').trim()
-    };
+    expireReservations();
     validate_(payload);
-    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const products = rowsToObjects_(ss.getSheetByName(SHEETS.products).getDataRange().getValues());
-    const product = products.find(x => String(x.sku) === payload.sku && (x.active === true || String(x.active).toUpperCase() === 'TRUE'));
-    if (!product) throw new Error('Sản phẩm hiện chưa mở đặt.');
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const productRows = rowsToObjects_(ss.getSheetByName(CFG.PRODUCTS).getDataRange().getValues());
+    const product = productRows.find(r => r.sku === payload.sku && String(r.active).toLowerCase() !== 'false');
+    if (!product) throw new Error('Vật phẩm hiện chưa mở nhận đặt.');
 
-    const inv = getInventory_();
-    const current = inv[payload.sku];
-    if (!current || current.available < payload.quantity) throw new Error('Số lượng còn lại không đủ.');
+    const qty = Number(payload.quantity || 1);
+    const quota = Number(product.quota || 0);
+    const inv = inventoryFor_(payload.sku, quota);
+    if (qty > inv.available) throw new Error('Số lượng còn lại không đủ. Vui lòng giảm số lượng.');
 
-    const settings = settings_();
     const orderId = nextOrderId_();
-    const now = new Date();
-    const hours = Number(settings.reservation_hours || 24);
-    const expiresAt = new Date(now.getTime() + hours*3600000);
-    const unitPrice = Number(product.price || 0);
-    const total = unitPrice * payload.quantity;
+    const created = new Date();
+    const settings = settingsObject_(ss.getSheetByName(CFG.SETTINGS));
+    const hours = Number(settings.reservation_hours || CFG.RESERVATION_HOURS);
+    const expires = new Date(created.getTime() + hours * 3600000);
+    const price = Number(product.price || 0);
+    const total = price * qty;
 
-    ss.getSheetByName(SHEETS.orders).appendRow([
-      orderId, now, payload.fullName, payload.phone, payload.cohort, payload.sku,
-      product.name, payload.quantity, unitPrice, total, payload.deliveryMethod,
-      payload.shippingName, payload.shippingPhone, payload.shippingAddress,
-      'RESERVED','PENDING',expiresAt,payload.note
+    ss.getSheetByName(CFG.ORDERS).appendRow([
+      orderId, created, payload.fullName.trim(), payload.phone.trim(), payload.cohort || '',
+      payload.sku, product.name, qty, price, total, payload.deliveryMethod,
+      payload.shippingName || '', payload.shippingPhone || '', payload.shippingAddress || '', payload.note || '',
+      'RESERVED','PENDING',expires
     ]);
 
-    result = {
-      ok:true, orderId, productName:product.name, quantity:payload.quantity,
-      total, totalText:formatVnd_(total),
-      expiresAt:Utilities.formatDate(expiresAt,'Asia/Ho_Chi_Minh','HH:mm dd/MM/yyyy'),
-      transferContent:(payload.phone + ' ' + orderId).replace(/\s+/g,' '),
-      inventory:getInventory_()
+    return {
+      ok: true,
+      orderId,
+      productName: product.name,
+      quantity: qty,
+      total,
+      totalText: formatVnd_(total),
+      expiresAt: Utilities.formatDate(expires, Session.getScriptTimeZone(), 'HH:mm · dd/MM/yyyy'),
+      transferContent: `${orderId.replace(/-/g,'')} ${payload.phone.trim()}`,
+      bankAccountName: settings.bank_account_name || '',
+      bankName: settings.bank_name || '',
+      bankNumber: settings.bank_number || ''
     };
-  } catch (err) {
-    result = { ok:false, message:err && err.message ? err.message : String(err) };
   } finally {
     lock.releaseLock();
   }
-  const safe = JSON.stringify(result).replace(/</g,'\\u003c');
-  return HtmlService.createHtmlOutput('<!doctype html><meta charset="utf-8"><script>parent.postMessage(' + safe + ', "*");<\/script>');
 }
 
-function getInventory_() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const products = rowsToObjects_(ss.getSheetByName(SHEETS.products).getDataRange().getValues());
-  const ordersSheet = ss.getSheetByName(SHEETS.orders);
-  const orders = ordersSheet.getLastRow() > 1 ? rowsToObjects_(ordersSheet.getDataRange().getValues()) : [];
-  const out = {};
-  products.forEach(p => {
-    const sku=String(p.sku), quota=Number(p.quota || 0);
-    let reserved=0, paid=0;
-    orders.filter(o=>String(o.sku)===sku).forEach(o=>{
-      const q=Number(o.quantity||0), os=String(o.order_status||''), ps=String(o.payment_status||'');
-      if(os==='RESERVED' && ps==='PENDING') reserved += q;
-      if(os==='CONFIRMED' || ps==='PAID') paid += q;
-    });
-    out[sku]={quota,reserved,paid,available:Math.max(quota-reserved-paid,0)};
-  });
-  return out;
-}
-
-function expireReservations_() {
-  const ss=SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sh=ss.getSheetByName(SHEETS.orders);
-  if(!sh || sh.getLastRow()<2) return;
-  const values=sh.getDataRange().getValues(), headers=values[0];
-  const oi=headers.indexOf('order_status'), pi=headers.indexOf('payment_status'), ei=headers.indexOf('expires_at');
-  if(oi<0||pi<0||ei<0) return;
-  const now=new Date(); let dirty=false;
-  for(let r=1;r<values.length;r++){
-    if(values[r][oi]==='RESERVED' && values[r][pi]==='PENDING' && values[r][ei] && new Date(values[r][ei])<now){
-      values[r][oi]='EXPIRED'; values[r][pi]='EXPIRED'; dirty=true;
+function expireReservations() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CFG.ORDERS);
+  if (!sheet || sheet.getLastRow() < 2) return;
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const orderStatus = headers.indexOf('order_status');
+  const paymentStatus = headers.indexOf('payment_status');
+  const expiresAt = headers.indexOf('expires_at');
+  const now = new Date();
+  let changed = false;
+  for (let r=1; r<values.length; r++) {
+    if (values[r][orderStatus] === 'RESERVED' && values[r][paymentStatus] === 'PENDING' && values[r][expiresAt] && new Date(values[r][expiresAt]) < now) {
+      values[r][orderStatus] = 'EXPIRED';
+      values[r][paymentStatus] = 'EXPIRED';
+      changed = true;
     }
   }
-  if(dirty) sh.getRange(2,1,values.length-1,headers.length).setValues(values.slice(1));
+  if (changed) sheet.getRange(2,1,values.length-1,headers.length).setValues(values.slice(1));
+}
+
+function inventoryFor_(sku, quota) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CFG.ORDERS);
+  if (!sheet || sheet.getLastRow() < 2) return {reserved:0, paid:0, available:quota};
+  const rows = rowsToObjects_(sheet.getDataRange().getValues()).filter(r => r.sku === sku);
+  let reserved = 0, paid = 0;
+  rows.forEach(r => {
+    const qty = Number(r.quantity || 0);
+    if (r.payment_status === 'PAID') paid += qty;
+    else if (r.order_status === 'RESERVED' && r.payment_status === 'PENDING') reserved += qty;
+  });
+  return {reserved, paid, available: Math.max(quota - reserved - paid, 0)};
 }
 
 function nextOrderId_() {
-  const sh=SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEETS.orders);
-  return 'LHP-' + String(Math.max(sh.getLastRow(),1)).padStart(4,'0');
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CFG.ORDERS);
+  const n = Math.max(sheet.getLastRow(),1);
+  return 'LHP-' + String(n).padStart(4,'0');
 }
-function settings_(){
-  const rows=rowsToObjects_(SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEETS.settings).getDataRange().getValues());
-  return rows.reduce((a,r)=>(a[String(r.key)]=r.value,a),{});
+
+function validate_(p) {
+  if (!p || !p.fullName || !p.phone || !p.sku || !p.deliveryMethod) throw new Error('Vui lòng điền đủ các trường bắt buộc.');
+  if (!/^0\d{9,10}$/.test(String(p.phone).trim())) throw new Error('Số điện thoại chưa đúng định dạng.');
+  if (Number(p.quantity || 0) < 1) throw new Error('Số lượng phải từ 1 trở lên.');
+  if (p.deliveryMethod === 'SHIP' && (!p.shippingName || !p.shippingPhone || !p.shippingAddress)) throw new Error('Vui lòng nhập đủ thông tin nhận hàng.');
 }
-function validate_(p){
-  if(!p.fullName||!p.phone||!p.sku) throw new Error('Vui lòng nhập đủ họ tên, số điện thoại và sản phẩm.');
-  if(!/^0\d{9,10}$/.test(p.phone)) throw new Error('Số điện thoại chưa đúng định dạng.');
-  if(!Number.isFinite(p.quantity)||p.quantity<1) throw new Error('Số lượng không hợp lệ.');
-  if(p.deliveryMethod==='SHIP' && (!p.shippingName||!p.shippingPhone||!p.shippingAddress)) throw new Error('Vui lòng nhập đủ thông tin nhận hàng.');
+
+function settingsObject_(sheet) {
+  const values = sheet.getDataRange().getValues();
+  const obj = {};
+  for (let i=1;i<values.length;i++) obj[values[i][0]] = values[i][1];
+  return obj;
 }
-function rowsToObjects_(v){const h=v[0].map(String);return v.slice(1).map(r=>Object.fromEntries(h.map((x,i)=>[x,r[i]])));}
-function formatVnd_(n){return Number(n||0).toLocaleString('vi-VN')+'đ';}
+
+function rowsToObjects_(values) {
+  if (!values || !values.length) return [];
+  const headers = values[0].map(String);
+  return values.slice(1).filter(r => r.some(v => v !== '')).map(row => {
+    const obj = {};
+    headers.forEach((h,i)=>obj[h]=row[i]);
+    return obj;
+  });
+}
+
+function ensureSheet_(ss, name, headers) {
+  let sheet = ss.getSheetByName(name);
+  if (!sheet) sheet = ss.insertSheet(name);
+  if (sheet.getLastRow() === 0) sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  return sheet;
+}
+
+function styleSheet_(sheet) {
+  const lastCol = sheet.getLastColumn();
+  if (!lastCol) return;
+  sheet.setFrozenRows(1);
+  sheet.getRange(1,1,1,lastCol).setBackground('#7A1718').setFontColor('#FFFFFF').setFontWeight('bold');
+  sheet.autoResizeColumns(1,lastCol);
+}
+
+function formatVnd_(n) {
+  return Number(n || 0).toLocaleString('vi-VN') + 'đ';
+}
+
+
+function doPost(e) {
+  let result;
+
+  try {
+    const p = e && e.parameter ? e.parameter : {};
+
+    result = submitOrder({
+      sku: String(p.sku || '').trim(),
+      fullName: String(p.fullName || '').trim(),
+      phone: String(p.phone || '').trim(),
+      cohort: String(p.cohort || '').trim(),
+      quantity: Number(p.quantity || 1),
+      deliveryMethod: String(p.deliveryMethod || 'PICKUP'),
+      shippingName: String(p.shippingName || '').trim(),
+      shippingPhone: String(p.shippingPhone || '').trim(),
+      shippingAddress: String(p.shippingAddress || '').trim(),
+      note: String(p.note || '').trim()
+    });
+
+    result.inventory = getInventoryObject_();
+  } catch (err) {
+    result = {
+      ok: false,
+      message: err && err.message ? err.message : String(err)
+    };
+  }
+
+  const safe = JSON.stringify(result).replace(/</g, '\\u003c');
+
+  return HtmlService
+    .createHtmlOutput(
+      '<!doctype html><meta charset="utf-8">' +
+      '<script>parent.postMessage(' + safe + ', "*");<\\/script>'
+    )
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+function getInventoryObject_() {
+  const data = getSiteData();
+  const out = {};
+
+  data.products.forEach(p => {
+    out[p.sku] = {
+      quota: Number(p.quota || 0),
+      reserved: Number(p.reserved || 0),
+      paid: Number(p.paid || 0),
+      available: Number(p.available || 0)
+    };
+  });
+
+  return out;
+}
