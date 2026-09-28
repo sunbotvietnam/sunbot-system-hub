@@ -17,6 +17,11 @@ function doGet(e) {
   try {
     if (action === 'siteData') return jsonp_(e, getSiteData());
     if (action === 'status') return jsonp_(e, getOrderStatus_(String(e.parameter.requestId || '')));
+    if (action === 'submit') {
+      const raw = String(e.parameter.payload || '');
+      if (!raw) throw new Error('Thiếu dữ liệu đơn hàng.');
+      return jsonp_(e, submitOrder(JSON.parse(raw)));
+    }
     return jsonp_(e, {ok:false,error:'Yêu cầu không hợp lệ.'});
   } catch (err) {
     return jsonp_(e, {ok:false,error:err && err.message ? err.message : String(err)});
