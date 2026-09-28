@@ -146,8 +146,8 @@ function submitOrder(payload) {
     ss.getSheetByName(CFG.ORDERS).appendRow([
       orderId, created, payload.fullName.trim(), payload.phone.trim(), payload.cohort || '',
       payload.sku, product.name, qty, price, total, payload.deliveryMethod,
-      payload.shippingName || '', payload.shippingPhone || '', payload.shippingAddress || '', payload.note || '',
-      'RESERVED','PENDING',expires
+      payload.shippingName || '', payload.shippingPhone || '', payload.shippingAddress || '',
+      'RESERVED','PENDING',expires, payload.note || '', payload.requestId || ''
     ]);
 
     return {
