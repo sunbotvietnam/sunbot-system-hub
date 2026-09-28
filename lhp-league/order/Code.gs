@@ -5,12 +5,31 @@ const CFG = {
   RESERVATION_HOURS: 24
 };
 
-function doGet() {
-  expireReservations();
-  return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('LHP League 10 Years · Pre-order')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+function doGet(e) {
+  try {
+    const action = (e && e.parameter && e.parameter.action) || 'siteData';
+    if (action === 'siteData') return json_({ok:true, data:getSiteData()});
+    return json_({ok:false, error:'Action không hợp lệ.'});
+  } catch (err) {
+    return json_({ok:false, error:String(err && err.message || err)});
+  }
+}
+
+function doPost(e) {
+  try {
+    const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    const action = body.action || 'submitOrder';
+    if (action !== 'submitOrder') return json_({ok:false, error:'Action không hợp lệ.'});
+    const payload = body.payload || body;
+    return json_({ok:true, data:submitOrder(payload)});
+  } catch (err) {
+    return json_({ok:false, error:String(err && err.message || err)});
+  }
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function setupDatabase() {
