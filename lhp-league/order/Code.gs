@@ -5,12 +5,62 @@ const CFG = {
   RESERVATION_HOURS: 24
 };
 
-function doGet() {
-  expireReservations();
-  return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('LHP League 10 Years · Pre-order')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+function doGet(e) {
+  const action = e && e.parameter ? String(e.parameter.action || '') : '';
+  if (!action) {
+    expireReservations();
+    return HtmlService.createHtmlOutputFromFile('Index')
+      .setTitle('LHP League 10 Years · Pre-order')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  }
+  try {
+    if (action === 'siteData') return jsonp_(e, getSiteData());
+    if (action === 'status') return jsonp_(e, getOrderStatus_(String(e.parameter.requestId || '')));
+    return jsonp_(e, {ok:false,error:'Yêu cầu không hợp lệ.'});
+  } catch (err) {
+    return jsonp_(e, {ok:false,error:err && err.message ? err.message : String(err)});
+  }
+}
+
+function doPost(e) {
+  try {
+    const raw = e && e.parameter ? e.parameter.payload : '';
+    if (!raw) throw new Error('Thiếu dữ liệu đơn hàng.');
+    const result = submitOrder(JSON.parse(raw));
+    return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ok:false,error:err && err.message ? err.message : String(err)}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function jsonp_(e, data) {
+  const cb = String((e && e.parameter && e.parameter.callback) || 'callback').replace(/[^a-zA-Z0-9_$\.]/g, '');
+  return ContentService.createTextOutput(cb + '(' + JSON.stringify(data) + ');').setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+
+function ensureRequestIdColumn_() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CFG.ORDERS);
+  if (!sheet) return;
+  const lastCol = Math.max(sheet.getLastColumn(), 1);
+  const headers = sheet.getRange(1,1,1,lastCol).getValues()[0].map(String);
+  if (headers.indexOf('request_id') === -1) sheet.getRange(1,lastCol + 1).setValue('request_id');
+}
+
+function getOrderStatus_(requestId) {
+  if (!requestId) return {ok:true,found:false};
+  ensureRequestIdColumn_();
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CFG.ORDERS);
+  if (!sheet || sheet.getLastRow() < 2) return {ok:true,found:false};
+  const rows = rowsToObjects_(sheet.getDataRange().getValues());
+  const r = rows.slice().reverse().find(x => String(x.request_id || '') === requestId);
+  if (!r) return {ok:true,found:false};
+  return {
+    ok:true, found:true, orderId:r.order_id, productName:r.product_name,
+    quantity:Number(r.quantity || 0), total:Number(r.total || 0), totalText:formatVnd_(r.total),
+    transferContent:String(r.order_id || '').replace(/-/g,'') + ' ' + String(r.phone || '')
+  };
 }
 
 function setupDatabase() {
